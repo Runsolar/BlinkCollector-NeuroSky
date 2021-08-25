@@ -123,6 +123,15 @@
         app:layout_constraintVertical_bias="0.0"
         app:rippleColor="#F44336" />
 
+    <Button
+        android:id="@+id/btn_to_files"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="go to files"
+        android:layout_margin="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <Spinner
         android:id="@+id/spinner"
         android:layout_width="220dp"
