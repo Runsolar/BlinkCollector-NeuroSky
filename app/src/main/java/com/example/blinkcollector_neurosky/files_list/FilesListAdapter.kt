@@ -5,9 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.blinkcollector_neurosky.databinding.FilesListItemBinding
+import javax.inject.Inject
 
 
-class FilesListAdapter : ListAdapter<FilesListItem, FilesListAdapter.ViewHolder>(FilesListDiffUtil()) {
+class FilesListAdapter @Inject constructor(
+        filesListDiffUtil: FilesListDiffUtil
+) : ListAdapter<FilesListItem, FilesListAdapter.ViewHolder>(filesListDiffUtil) {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = FilesListItemBinding.inflate(
                 LayoutInflater.from(parent.context), parent, false

@@ -8,11 +8,14 @@ import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.blinkcollector_neurosky.databinding.ActivityFilesListBinding
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class FilesListActivity : AppCompatActivity() {
     private lateinit var binding: ActivityFilesListBinding
-    private val filesListAdapter = FilesListAdapter()
+    @Inject
+    lateinit var filesListAdapter: FilesListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
