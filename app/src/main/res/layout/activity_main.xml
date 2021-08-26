@@ -45,7 +45,7 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName"
+        android:id="@+id/directoryName"
         android:layout_width="160dp"
         android:layout_height="40dp"
         android:layout_marginTop="8dp"
@@ -73,7 +73,7 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName2"
+        android:id="@+id/operatorName"
         android:layout_width="160dp"
         android:layout_height="40dp"
         android:layout_marginTop="8dp"
@@ -122,6 +122,15 @@
         app:layout_constraintTop_toBottomOf="@+id/graph"
         app:layout_constraintVertical_bias="0.0"
         app:rippleColor="#F44336" />
+
+    <Button
+        android:id="@+id/btn_to_files"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="go to files"
+        android:layout_margin="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Spinner
         android:id="@+id/spinner"
