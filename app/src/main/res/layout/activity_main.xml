@@ -45,7 +45,7 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName"
+        android:id="@+id/directoryName"
         android:layout_width="160dp"
         android:layout_height="40dp"
         android:layout_marginTop="8dp"
@@ -73,7 +73,7 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName2"
+        android:id="@+id/operatorName"
         android:layout_width="160dp"
         android:layout_height="40dp"
         android:layout_marginTop="8dp"

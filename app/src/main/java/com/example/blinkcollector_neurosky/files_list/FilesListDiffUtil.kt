@@ -1,14 +1,15 @@
 package com.example.blinkcollector_neurosky.files_list
 
 import androidx.recyclerview.widget.DiffUtil
+import com.example.blinkcollector_neurosky.data.FilesListData
 import javax.inject.Inject
 
-class FilesListDiffUtil @Inject constructor() : DiffUtil.ItemCallback<FilesListItem>() {
-    override fun areItemsTheSame(oldItem: FilesListItem, newItem: FilesListItem): Boolean {
-        return oldItem.name == newItem.name
+class FilesListDiffUtil @Inject constructor() : DiffUtil.ItemCallback<FilesListData>() {
+    override fun areItemsTheSame(oldData: FilesListData, newData: FilesListData): Boolean {
+        return oldData == newData
     }
 
-    override fun areContentsTheSame(oldItem: FilesListItem, newItem: FilesListItem): Boolean {
-        return oldItem == newItem
+    override fun areContentsTheSame(oldData: FilesListData, newData: FilesListData): Boolean {
+        return oldData == newData
     }
 }

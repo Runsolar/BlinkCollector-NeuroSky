@@ -1,6 +1,7 @@
 package com.example.blinkcollector_neurosky;
 
 import com.example.blinkcollector_neurosky.files_list.FilesListActivity;
+import com.example.blinkcollector_neurosky.repository.FilesListRepository;
 import com.neurosky.connection.ConnectionStates;
 import com.neurosky.connection.EEGPower;
 import com.neurosky.connection.TgStreamHandler;
@@ -34,7 +35,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import android.os.Bundle;
-import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -44,6 +45,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 
+import javax.inject.Inject;
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -58,6 +63,11 @@ public class MainActivity extends AppCompatActivity {
     private GraphView graph1 = null;
 
     private Button btnToFiles;
+    private TextView directoryName;
+    private TextView operatorName;
+
+    @Inject
+    FilesListRepository filesListRepository;
 
     ArrayList<Integer> rawData = new ArrayList<Integer>(Collections.nCopies(1536, 0)); // 512 Hz - 3 seconds 1536
     String[] numberOfBlinks = { "number of blinks 2", "number of blinks 3", "number of blinks 4"};
@@ -116,6 +126,10 @@ public class MainActivity extends AppCompatActivity {
 
         dataPoints = new DataPoint[rawData.size()];
 
+        directoryName = findViewById(R.id.directoryName);
+
+        operatorName = findViewById(R.id.operatorName);
+
         // Создаем адаптер ArrayAdapter с помощью массива строк и стандартной разметки элемета spinner
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, numberOfBlinks);
         // Определяем разметку для использования при выборе элемента
@@ -158,6 +172,15 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View arg0) {
                 filename = Calendar.getInstance().getTime().toString()+".txt";
                 initSave(filename);
+
+                String directory = directoryName.getText().toString();
+                String operator = operatorName.getText().toString();
+                filesListRepository.put(
+                        filename,
+                        operator,
+                        directory,
+                        dataPoints
+                );
             }
         });
 
