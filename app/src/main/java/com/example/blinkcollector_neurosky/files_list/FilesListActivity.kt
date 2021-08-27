@@ -10,15 +10,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.blinkcollector_neurosky.databinding.ActivityFilesListBinding
 import com.example.blinkcollector_neurosky.repository.FilesListRepository
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class FilesListActivity : AppCompatActivity() {
     private lateinit var binding: ActivityFilesListBinding
+
     @Inject
     lateinit var filesListAdapter: FilesListAdapter
+
     @Inject
     lateinit var filesListRepository: FilesListRepository
 
@@ -41,6 +46,10 @@ class FilesListActivity : AppCompatActivity() {
         val operatorAdapter = ArrayAdapter(this, simple_spinner_item, operators)
         directoryAdapter.setDropDownViewResource(simple_spinner_dropdown_item)
         binding.operator.adapter = operatorAdapter
+
+        binding.floatingActionButton.setOnClickListener {
+            filesListRepository.zipAll();
+        }
     }
 
     override fun onAttachedToWindow() {
