@@ -10,29 +10,38 @@ import javax.inject.Singleton
 
 @Singleton
 class FilesListRepository @Inject constructor(
-    private val deviseStorage: DeviseStorage
+        private val deviceStorage: DeviceStorage
 ) {
     private val mutableFilesList = MutableStateFlow<List<FilesListData>>(emptyList())
     val filesList = mutableFilesList.asStateFlow()
 
     init {
-        mutableFilesList.value = deviseStorage.loadFiles().toList()
+        mutableFilesList.value = deviceStorage.loadFiles().toList()
     }
 
     fun put(name: String, operator: String, directory: String, dataPoints: Array<DataPoint>) {
         val data = FilesListData(
-            name = name,
-            operator = operator,
-            directory = directory,
-            data = dataPoints.map { Point(it.x, it.y) }
+                name = name,
+                operator = operator,
+                directory = directory,
+                data = dataPoints.map { Point(it.x, it.y) }
         )
 
         mutableFilesList.value += data
-        deviseStorage.saveFile(data)
+        deviceStorage.saveFile(data)
     }
 
     fun remove(data: FilesListData) {
         mutableFilesList.value -= data
-        deviseStorage.removeFile(data)
+        deviceStorage.removeFile(data)
     }
+
+    fun zip(data: List<FilesListData>) {
+        deviceStorage.zipFiles(data);
+    }
+
+    fun zipAll() {
+        zip(filesList.value);
+    }
+
 }

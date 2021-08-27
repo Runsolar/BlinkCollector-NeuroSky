@@ -1,42 +1,38 @@
 package com.example.blinkcollector_neurosky;
 
-import com.example.blinkcollector_neurosky.files_list.FilesListActivity;
-import com.example.blinkcollector_neurosky.repository.FilesListRepository;
-import com.neurosky.connection.ConnectionStates;
-import com.neurosky.connection.EEGPower;
-import com.neurosky.connection.TgStreamHandler;
-import com.neurosky.connection.TgStreamReader;
-import com.neurosky.connection.DataType.MindDataType;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
-
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
-
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.media.MediaScannerConnection;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
-
-import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.example.blinkcollector_neurosky.files_list.FilesListActivity;
+import com.example.blinkcollector_neurosky.repository.FilesListRepository;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
+import com.neurosky.connection.ConnectionStates;
+import com.neurosky.connection.DataType.MindDataType;
+import com.neurosky.connection.EEGPower;
+import com.neurosky.connection.TgStreamHandler;
+import com.neurosky.connection.TgStreamReader;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -46,6 +42,7 @@ import java.util.Calendar;
 import java.util.Collections;
 
 import javax.inject.Inject;
+
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
@@ -70,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
     FilesListRepository filesListRepository;
 
     ArrayList<Integer> rawData = new ArrayList<Integer>(Collections.nCopies(1536, 0)); // 512 Hz - 3 seconds 1536
-    String[] numberOfBlinks = { "number of blinks 2", "number of blinks 3", "number of blinks 4"};
+    String[] numberOfBlinks = {"number of blinks 2", "number of blinks 3", "number of blinks 4"};
 
     String filename = null;
 
@@ -86,25 +83,25 @@ public class MainActivity extends AppCompatActivity {
 
         initView();
 
-        try {
-            // (1) Make sure that the device supports Bluetooth and Bluetooth is on
-            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
-                Toast.makeText(
-                        this,
-                        "Please enable your Bluetooth and re-run this program !",
-                        Toast.LENGTH_LONG).show();
-                finish();
-//				return;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.i(TAG, "error:" + e.getMessage());
-            return;
-        }
+//        try {
+//            // (1) Make sure that the device supports Bluetooth and Bluetooth is on
+//            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+//            if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
+//                Toast.makeText(
+//                        this,
+//                        "Please enable your Bluetooth and re-run this program !",
+//                        Toast.LENGTH_LONG).show();
+//                finish();
+////				return;
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            Log.i(TAG, "error:" + e.getMessage());
+//            return;
+//        }
 
         // Example of constructor public TgStreamReader(BluetoothAdapter ba, TgStreamHandler tgStreamHandler)
-        tgStreamReader = new TgStreamReader(mBluetoothAdapter,callback);
+        tgStreamReader = new TgStreamReader(mBluetoothAdapter, callback);
         // (2) Demo of setGetDataTimeOutTime, the default time is 5s, please call it before connect() of connectAndStart()
         tgStreamReader.setGetDataTimeOutTime(6);
         // (3) Demo of startLog, you will get more sdk log by logcat if you call this function
@@ -144,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
                 badPacketCount = 0;
 
                 // (5) demo of isBTConnected
-                if(tgStreamReader != null && tgStreamReader.isBTConnected()){
+                if (tgStreamReader != null && tgStreamReader.isBTConnected()) {
 
                     // Prepare for connecting
                     tgStreamReader.stop();
@@ -154,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
                 // (4) Demo of  using connect() and start() to replace connectAndStart(),
                 // please call start() when the state is changed to STATE_CONNECTED
                 tgStreamReader.connect();
-				//tgStreamReader.connectAndStart();
+                //tgStreamReader.connectAndStart();
             }
         });
 
@@ -170,17 +167,19 @@ public class MainActivity extends AppCompatActivity {
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                filename = Calendar.getInstance().getTime().toString()+".txt";
-                initSave(filename);
+                if (isStoragePermissionGranted() && isStoragePermissionGrantedRead()) {
+                    filename = Calendar.getInstance().getTime().toString() + ".txt";
+//                initSave(filename);
 
-                String directory = directoryName.getText().toString();
-                String operator = operatorName.getText().toString();
-                filesListRepository.put(
-                        filename,
-                        operator,
-                        directory,
-                        dataPoints
-                );
+                    String directory = directoryName.getText().toString();
+                    String operator = operatorName.getText().toString();
+                    filesListRepository.put(
+                            filename,
+                            operator,
+                            directory,
+                            dataPoints
+                    );
+                }
             }
         });
 
@@ -281,14 +280,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onRecordFail(int flag) {
             // You can handle the record error message here
-            Log.e(TAG,"onRecordFail: " +flag);
+            Log.e(TAG, "onRecordFail: " + flag);
 
         }
 
         @Override
         public void onChecksumFail(byte[] payload, int length, int checksum) {
             // You can handle the bad packets here.
-            badPacketCount ++;
+            badPacketCount++;
             Message msg = LinkDetectedHandler.obtainMessage();
             msg.what = MSG_UPDATE_BAD_PACKET;
             msg.arg1 = badPacketCount;
@@ -336,8 +335,8 @@ public class MainActivity extends AppCompatActivity {
                     //tv_attention.setText("" +msg.arg1 );
                     break;
                 case MindDataType.CODE_EEGPOWER:
-                    EEGPower power = (EEGPower)msg.obj;
-                    if(power.isValidate()){
+                    EEGPower power = (EEGPower) msg.obj;
+                    if (power.isValidate()) {
                         //tv_delta.setText("" +power.delta);
                         //tv_theta.setText("" +power.theta);
                         //tv_lowalpha.setText("" +power.lowAlpha);
@@ -365,11 +364,9 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    public void showToast(final String msg,final int timeStyle){
-        MainActivity.this.runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
+    public void showToast(final String msg, final int timeStyle) {
+        MainActivity.this.runOnUiThread(new Runnable() {
+            public void run() {
                 Toast.makeText(getApplicationContext(), msg, timeStyle).show();
             }
 
@@ -421,7 +418,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 fout = new FileOutputStream(file);
 
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
             MediaScannerConnection.scanFile(
                     getApplicationContext(),
                     new String[]{file.toString()},
@@ -431,16 +429,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    boolean isStoragePermissionGranted() {
+    public boolean isStoragePermissionGranted() {
         String TAG = "Storage Permission";
         if (Build.VERSION.SDK_INT >= 23) {
             if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED
             ) {
-                Log.v(TAG, "Permission is granted");
+                Log.v(TAG, "Write permission is granted");
                 return true;
             } else {
-                Log.v(TAG, "Permission is revoked");
+                Log.v(TAG, "Write permission is revoked");
                 ActivityCompat.requestPermissions(
                         this,
                         new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
@@ -449,7 +447,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         } else { //permission is automatically granted on sdk<23 upon installation
-            Log.v(TAG, "Permission is granted");
+            Log.v(TAG, "Write permission is granted");
             return true;
         }
     }
