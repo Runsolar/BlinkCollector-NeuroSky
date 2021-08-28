@@ -19,11 +19,12 @@ class FilesListRepository @Inject constructor(
         mutableFilesList.value = deviceStorage.loadFiles().toList()
     }
 
-    fun put(name: String, operator: String, directory: String, dataPoints: Array<DataPoint>) {
+    fun put(name: String, blink: String, operator: String, base: String, dataPoints: Array<DataPoint>) {
         val data = FilesListData(
                 name = name,
+                blink = blink,
                 operator = operator,
-                directory = directory,
+                base = base,
                 data = dataPoints.map { Point(it.x, it.y) }
         )
 

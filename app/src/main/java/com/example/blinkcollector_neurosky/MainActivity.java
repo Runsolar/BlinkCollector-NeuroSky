@@ -37,9 +37,11 @@ import com.neurosky.connection.TgStreamReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -49,6 +51,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    private final String DATE_FORMAT = "dd-M-yyyy hh:mm:ss";
 
     private BluetoothAdapter mBluetoothAdapter = null;
     private TgStreamReader tgStreamReader = null;
@@ -56,9 +59,9 @@ public class MainActivity extends AppCompatActivity {
     private Button btn_start = null;
     private Button btn_stop = null;
     private Button btn_save = null;
-    private Spinner spinner = null;
     private GraphView graph1 = null;
 
+    private Spinner blinksSpinner;
     private Button btnToFiles;
     private TextView directoryName;
     private TextView operatorName;
@@ -67,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
     FilesListRepository filesListRepository;
 
     ArrayList<Integer> rawData = new ArrayList<Integer>(Collections.nCopies(1536, 0)); // 512 Hz - 3 seconds 1536
-    String[] numberOfBlinks = {"number of blinks 2", "number of blinks 3", "number of blinks 4"};
+    String[] numberOfBlinks = {"2 blinks", "3 blinks", "4 blinks"};
 
     String filename = null;
 
@@ -115,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         btn_stop = (Button) findViewById(R.id.btn_stop);
         btn_save = (Button) findViewById(R.id.btn_sve);
 
-        spinner = (Spinner) findViewById(R.id.spinner);
+        blinksSpinner = (Spinner) findViewById(R.id.blinks_spinner);
 
         graph1 = (GraphView) findViewById(R.id.graph);
 
@@ -132,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
         // Определяем разметку для использования при выборе элемента
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Применяем адаптер к элементу spinner
-        spinner.setAdapter(adapter);
+        blinksSpinner.setAdapter(adapter);
 
         btn_start.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,15 +171,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View arg0) {
                 if (isStoragePermissionGranted() && isStoragePermissionGrantedRead()) {
-                    filename = Calendar.getInstance().getTime().toString() + ".txt";
+
+                    Locale locale = getResources().getConfiguration().locale;
+                    filename = new SimpleDateFormat(DATE_FORMAT, locale)
+                            .format(Calendar.getInstance().getTime());
 //                initSave(filename);
 
-                    String directory = directoryName.getText().toString();
+                    String blink = blinksSpinner.getSelectedItem().toString();
                     String operator = operatorName.getText().toString();
+                    String base = directoryName.getText().toString();
                     filesListRepository.put(
                             filename,
+                            blink,
                             operator,
-                            directory,
+                            base,
                             dataPoints
                     );
                 }
