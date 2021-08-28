@@ -86,51 +86,45 @@
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <Button
-        android:id="@+id/btn_sve"
+        android:id="@+id/btn_save"
         android:layout_width="150dp"
         android:layout_height="55dp"
+        android:layout_marginBottom="48dp"
         android:text="save"
-        app:layout_constraintBottom_toTopOf="@+id/graph"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btn_start"
         android:layout_width="150dp"
         android:layout_height="55dp"
-        android:layout_marginTop="148dp"
         android:text="start"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_stop"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/graph"
-        app:layout_constraintVertical_bias="0.047"
         app:rippleColor="#4CAF50" />
 
     <Button
         android:id="@+id/btn_stop"
         android:layout_width="150dp"
         android:layout_height="55dp"
-        android:layout_marginTop="232dp"
+        android:layout_marginBottom="16dp"
         android:text="stop"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btn_save"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/graph"
-        app:layout_constraintVertical_bias="0.0"
         app:rippleColor="#F44336" />
 
     <Button
         android:id="@+id/btn_to_files"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="go to files"
-        android:layout_margin="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_margin="16dp"
+        android:text="Inscpect"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
         android:id="@+id/blinks_spinner"

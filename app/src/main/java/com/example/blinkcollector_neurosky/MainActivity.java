@@ -86,22 +86,22 @@ public class MainActivity extends AppCompatActivity {
 
         initView();
 
-//        try {
-//            // (1) Make sure that the device supports Bluetooth and Bluetooth is on
-//            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-//            if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
-//                Toast.makeText(
-//                        this,
-//                        "Please enable your Bluetooth and re-run this program !",
-//                        Toast.LENGTH_LONG).show();
-//                finish();
-////				return;
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            Log.i(TAG, "error:" + e.getMessage());
-//            return;
-//        }
+        try {
+            // (1) Make sure that the device supports Bluetooth and Bluetooth is on
+            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
+                Toast.makeText(
+                        this,
+                        "Please enable your Bluetooth and re-run this program !",
+                        Toast.LENGTH_LONG).show();
+                finish();
+//				return;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i(TAG, "error:" + e.getMessage());
+            return;
+        }
 
         // Example of constructor public TgStreamReader(BluetoothAdapter ba, TgStreamHandler tgStreamHandler)
         tgStreamReader = new TgStreamReader(mBluetoothAdapter, callback);
@@ -116,7 +116,9 @@ public class MainActivity extends AppCompatActivity {
 
         btn_start = (Button) findViewById(R.id.btn_start);
         btn_stop = (Button) findViewById(R.id.btn_stop);
-        btn_save = (Button) findViewById(R.id.btn_sve);
+        btn_stop.setEnabled(false);
+        btn_save = (Button) findViewById(R.id.btn_save);
+        btn_save.setEnabled(false);
 
         blinksSpinner = (Spinner) findViewById(R.id.blinks_spinner);
 
@@ -155,6 +157,9 @@ public class MainActivity extends AppCompatActivity {
                 // please call start() when the state is changed to STATE_CONNECTED
                 tgStreamReader.connect();
                 //tgStreamReader.connectAndStart();
+
+                btn_start.setEnabled(false);
+                btn_stop.setEnabled(true);
             }
         });
 
@@ -164,6 +169,10 @@ public class MainActivity extends AppCompatActivity {
 
                 tgStreamReader.stop();
                 tgStreamReader.close();
+
+                btn_start.setEnabled(true);
+                btn_stop.setEnabled(false);
+                btn_save.setEnabled(true);
             }
         });
 
@@ -188,6 +197,9 @@ public class MainActivity extends AppCompatActivity {
                             dataPoints
                     );
                 }
+                btn_start.setEnabled(true);
+                btn_stop.setEnabled(false);
+                btn_save.setEnabled(false);
             }
         });
 
