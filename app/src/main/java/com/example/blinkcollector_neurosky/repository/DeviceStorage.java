@@ -11,6 +11,7 @@ import com.example.blinkcollector_neurosky.data.Point;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -305,17 +306,7 @@ public class DeviceStorage {
         return file.getName();
     }
 
-    void normalizeFiles(String path) {
-        File f;
-        if (path.startsWith(root)) {
-            f = new File(path);
-        } else {
-            f = new File(root, path);
-        }
-        normalizeFiles(f);
-    }
-
-    void normalizeFiles(String opertator, String directory) {
+    void normalizeBlinks(String opertator, String directory) {
         File dir = new File(
                 new Uri.Builder()
                         .appendPath(rootDir.getPath())
@@ -324,10 +315,41 @@ public class DeviceStorage {
                         .build()
                         .getPath()
         );
-        normalizeFiles(dir);
+        normalizeBlinks(dir);
     }
 
-    void normalizeFiles(File dir) {
+    void normalizeBase(String path) {
+        File f;
+        if (path.startsWith(root)) {
+            f = new File(path);
+        } else {
+            f = new File(root, path);
+        }
+        File[] operators = f.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File file) {
+                return file.isDirectory();
+            }
+        });
+        if (operators != null) {
+            for (File op : operators) {
+                File[] blinks = op.listFiles(new FileFilter() {
+                    @Override
+                    public boolean accept(File file) {
+                        return file.isDirectory();
+                    }
+                });
+                if (blinks != null) {
+                    for (File blink : blinks) {
+                        normalizeBlinks(blink);
+                    }
+                }
+            }
+        }
+
+    }
+
+    private void normalizeBlinks(File dir) {
         File[] files;
         if (!dir.exists() || (files = dir.listFiles()) == null) {
             return;

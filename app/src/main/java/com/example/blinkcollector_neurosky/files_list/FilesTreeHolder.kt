@@ -3,6 +3,7 @@ package com.example.blinkcollector_neurosky.files_list
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
+import androidx.core.view.isVisible
 import com.example.blinkcollector_neurosky.R
 import com.example.blinkcollector_neurosky.databinding.FilesTreeItemBinding
 import com.example.blinkcollector_neurosky.data.TreeItem
@@ -36,8 +37,12 @@ class FilesTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<TreeItem>(
             filesListRepository.share(context, filesListRepository.zip(item.path))
         }
 
-        binding.treeNorm.setOnClickListener {
-         filesListRepository.normalize(item.path);
+        if (item.type == BASE) {
+            binding.treeNorm.setOnClickListener {
+                filesListRepository.normalize(item.path);
+            }
+        } else {
+            binding.treeNorm.isVisible = false;
         }
 
         return view

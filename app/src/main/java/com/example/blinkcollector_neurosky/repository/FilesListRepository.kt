@@ -42,6 +42,7 @@ class FilesListRepository @Inject constructor(
 
     fun remove(path: String) {
         deviceStorage.deleteDirectory(path)
+        mutableFilesList.value = deviceStorage.loadFiles().toList()
     }
 
     fun remove(data: FilesListData) {
@@ -62,7 +63,7 @@ class FilesListRepository @Inject constructor(
     }
 
     fun normalize(path: String) {
-        deviceStorage.normalizeFiles(path);
+        deviceStorage.normalizeBlinks(path);
     }
 
     fun share(context: Context, file: File) {
