@@ -6,6 +6,7 @@ import android.R.layout.simple_spinner_item
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.blinkcollector_neurosky.databinding.ActivityFilesListBinding
 import com.example.blinkcollector_neurosky.repository.FilesListRepository
@@ -50,6 +51,14 @@ class FilesListActivity : AppCompatActivity() {
         binding.floatingActionButton.setOnClickListener {
             filesListRepository.zipAll();
         }
+
+        binding.buttonNormalize.setOnClickListener {
+            filesListRepository.normalize(
+                    binding.operator.selectedItem.toString(),
+                    binding.directory.selectedItem.toString()
+            )
+        }
+
     }
 
     override fun onAttachedToWindow() {

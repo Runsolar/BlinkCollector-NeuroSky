@@ -20,6 +20,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -86,6 +87,9 @@ public class DeviceStorage {
         File file = associatedFile(data);
         if (file.exists()) {
             file.delete();
+            if (file.getParentFile().listFiles() == null) {
+                deleteDirectory(file.getParentFile());
+            }
         }
     }
 
@@ -244,6 +248,63 @@ public class DeviceStorage {
             }
         }
         dir.delete();
+    }
+
+    String generateFileName(String opertator, String directory) {
+        File dir = new File(
+                new Uri.Builder()
+                        .appendPath(rootDir.getPath())
+                        .appendPath(opertator)
+                        .appendPath(directory)
+                        .build()
+                        .getPath()
+        );
+        File[] files;
+        if (!dir.exists() || (files = dir.listFiles()) == null) {
+            return new File(dir, "data1.txt").getPath();
+        }
+        int offset = 1;
+        File file = new File(dir, "data" + (files.length + offset) + ".txt");
+        while (file.exists()) {
+            file = new File(dir, "data" + (files.length + ++offset) + ".txt");
+        }
+        return file.getName();
+    }
+
+    void normalizeFiles(String opertator, String directory) {
+        File dir = new File(
+                new Uri.Builder()
+                        .appendPath(rootDir.getPath())
+                        .appendPath(opertator)
+                        .appendPath(directory)
+                        .build()
+                        .getPath()
+        );
+        File[] files;
+        if (!dir.exists() || (files = dir.listFiles()) == null) {
+            return;
+        }
+        ArrayList<Integer> numbers = new ArrayList<>();
+        for (File f : files) {
+            try {
+                int num = Integer.parseInt(f.getName().replace("data", "").replace(".txt", ""));
+                numbers.add(num);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+        Collections.sort(numbers);
+        int currentNumber = 0;
+        for (Integer number : numbers) {
+            File f = new File(dir, "data" + number + ".txt");
+            if (f.exists()) {
+                currentNumber++;
+                if (number != currentNumber) {
+                    f.renameTo(new File(dir, "data" + currentNumber + ".txt"));
+                }
+            }
+        }
+
     }
 
 }

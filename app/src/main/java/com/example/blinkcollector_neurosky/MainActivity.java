@@ -168,13 +168,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View arg0) {
                 if (isStoragePermissionGranted() && isStoragePermissionGrantedRead()) {
-                    filename = Calendar.getInstance().getTime().toString() + ".txt";
-//                initSave(filename);
-
                     String directory = directoryName.getText().toString();
                     String operator = operatorName.getText().toString();
                     filesListRepository.put(
-                            filename,
                             operator,
                             directory,
                             dataPoints
