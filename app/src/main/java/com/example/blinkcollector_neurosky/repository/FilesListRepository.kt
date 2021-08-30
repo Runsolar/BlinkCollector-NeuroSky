@@ -14,33 +14,27 @@ class FilesListRepository @Inject constructor(
 ) {
     private val mutableFilesList = MutableStateFlow<List<FilesListData>>(emptyList())
     val filesList = mutableFilesList.asStateFlow()
-    private var operator : String? = null;
-    private var directory : String? = null;
 
     init {
-        updateFileList();
+        mutableFilesList.value = deviceStorage.loadFiles().toList()
     }
 
-    fun put(operator: String, directory: String, dataPoints: Array<DataPoint>) {
-
-        val name = deviceStorage.generateFileName(operator, directory);
-
+    fun put(name: String, blink: String, operator: String, base: String, dataPoints: Array<DataPoint>) {
         val data = FilesListData(
                 name = name,
+                blink = blink,
                 operator = operator,
-                directory = directory,
+                base = base,
                 data = dataPoints.map { Point(it.x, it.y) }
         )
 
         mutableFilesList.value += data
         deviceStorage.saveFile(data)
-        updateFileList();
     }
 
     fun remove(data: FilesListData) {
         mutableFilesList.value -= data
         deviceStorage.removeFile(data)
-        updateFileList();
     }
 
     fun zip(data: List<FilesListData>) {
@@ -51,16 +45,4 @@ class FilesListRepository @Inject constructor(
         zip(filesList.value);
     }
 
-    fun normalize(operator: String, directory: String) {
-        deviceStorage.normalizeFiles(operator, directory);
-    }
-
-    fun setFilter(operator: String, directory: String) {
-        this.operator = operator;
-        this.directory = directory;
-    }
-    
-    fun updateFileList() {
-        mutableFilesList.value = deviceStorage.loadFiles().toList();
-    }
 }

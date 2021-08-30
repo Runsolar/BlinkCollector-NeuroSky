@@ -36,12 +36,10 @@ public class DeviceStorage {
 
     private static final String root = Environment.getExternalStorageDirectory().toString();
     private static final String appFolderName = "BlinkCollector";
-    private static final String baseName = "Base1";
     private static final File rootDir = new File(
             new Uri.Builder()
                     .appendPath(root)
                     .appendPath(appFolderName)
-                    .appendPath(baseName)
                     .build()
                     .getPath()
     );
@@ -121,6 +119,7 @@ public class DeviceStorage {
     private FilesListData readFile(File file) {
         String blink = file.getParentFile().getName();
         String operator = file.getParentFile().getParentFile().getName();
+        String base = file.getParentFile().getParentFile().getParentFile().getName();
         List<Point> points = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
@@ -136,6 +135,7 @@ public class DeviceStorage {
                     file.getName(),
                     blink,
                     operator,
+                    base,
                     points
             );
         } catch (IOException | NumberFormatException e) {
@@ -148,8 +148,9 @@ public class DeviceStorage {
         return new File(
                 new Uri.Builder()
                         .appendPath(rootDir.getPath())
+                        .appendPath(filesListData.getBase())
                         .appendPath(filesListData.getOperator())
-                        .appendPath(filesListData.getDirectory())
+                        .appendPath(filesListData.getBlink())
                         .appendPath(filesListData.getName())
                         .build()
                         .getPath()
@@ -162,7 +163,7 @@ public class DeviceStorage {
         }
         try {
             String operator = filesListData.get(0).getOperator();
-            String blinks = filesListData.get(0).getDirectory();
+            String blinks = filesListData.get(0).getBase();
             File zipFolder = new File(tempDir, "zipFolder");
             zipFolder.mkdirs();
             File zipFile = new File(tempDir, "zipfile");
@@ -175,7 +176,7 @@ public class DeviceStorage {
                     if (!operator.equals(data.getOperator())) {
                         operator = null;
                     }
-                    if (!blinks.equals(data.getDirectory())) {
+                    if (!blinks.equals(data.getBase())) {
                         blinks = null;
                     }
                     String path = f.getPath().replace(rootDir.getPath(), "");

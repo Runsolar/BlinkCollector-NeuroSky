@@ -1,15 +1,11 @@
 package com.example.blinkcollector_neurosky.files_list
 
 
-import android.R.layout.simple_spinner_dropdown_item
-import android.R.layout.simple_spinner_item
 import android.os.Bundle
-import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.get
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.blinkcollector_neurosky.databinding.ActivityFilesListBinding
 import com.example.blinkcollector_neurosky.repository.FilesListRepository
+import com.unnamed.b.atv.view.AndroidTreeView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
@@ -23,42 +19,18 @@ class FilesListActivity : AppCompatActivity() {
     private lateinit var binding: ActivityFilesListBinding
 
     @Inject
-    lateinit var filesListAdapter: FilesListAdapter
-
-    @Inject
     lateinit var filesListRepository: FilesListRepository
 
+    @Inject
+    lateinit var filesTreeViewFactory: FilesTreeViewFactory
+
     private lateinit var innerScope: CoroutineScope
+    private lateinit var treeView: AndroidTreeView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFilesListBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        binding.list.adapter = filesListAdapter
-        binding.list.layoutManager = LinearLayoutManager(this)
-
-        val directories = arrayOf("blink2", "blink3", "blink4")
-        val directoryAdapter = ArrayAdapter(this, simple_spinner_item, directories)
-        directoryAdapter.setDropDownViewResource(simple_spinner_dropdown_item)
-        binding.directory.adapter = directoryAdapter
-
-        val operators = arrayOf("operator2", "operator3", "operator4")
-        val operatorAdapter = ArrayAdapter(this, simple_spinner_item, operators)
-        directoryAdapter.setDropDownViewResource(simple_spinner_dropdown_item)
-        binding.operator.adapter = operatorAdapter
-
-        binding.floatingActionButton.setOnClickListener {
-            filesListRepository.zipAll();
-        }
-
-        binding.buttonNormalize.setOnClickListener {
-            filesListRepository.normalize(
-                    binding.operator.selectedItem.toString(),
-                    binding.directory.selectedItem.toString()
-            )
-        }
-
     }
 
     override fun onAttachedToWindow() {
@@ -66,7 +38,10 @@ class FilesListActivity : AppCompatActivity() {
         innerScope = MainScope()
         innerScope.launch {
             filesListRepository.filesList.collect {
-                filesListAdapter.submitList(it)
+                treeView = filesTreeViewFactory.createTreeView(this@FilesListActivity, it)
+                binding.treeViewContainer.removeAllViews()
+                binding.treeViewContainer.addView(treeView.view)
+                treeView.expandAll()
             }
         }
     }
