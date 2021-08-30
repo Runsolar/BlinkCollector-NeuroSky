@@ -7,9 +7,12 @@ import com.example.blinkcollector_neurosky.R
 import com.example.blinkcollector_neurosky.databinding.FilesTreeItemBinding
 import com.example.blinkcollector_neurosky.data.TreeItem
 import com.example.blinkcollector_neurosky.data.TreeItem.TreeItemType.*
+import com.example.blinkcollector_neurosky.repository.FilesListRepository
 import com.unnamed.b.atv.model.TreeNode
 
 class FilesTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<TreeItem>(context) {
+    lateinit var filesListRepository: FilesListRepository
+
     override fun createNodeView(node: TreeNode, item: TreeItem): View {
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.files_tree_item, null, false)
@@ -24,6 +27,18 @@ class FilesTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<TreeItem>(
             APP_FOLDER -> R.drawable.ic_hub
         }
         )
+
+        binding.treeRemove.setOnClickListener {
+            filesListRepository.remove(item.path);
+        }
+
+        binding.treeShare.setOnClickListener {
+            filesListRepository.share(context, filesListRepository.zip(item.path))
+        }
+
+        binding.treeNorm.setOnClickListener {
+         filesListRepository.normalize(item.path);
+        }
 
         return view
     }

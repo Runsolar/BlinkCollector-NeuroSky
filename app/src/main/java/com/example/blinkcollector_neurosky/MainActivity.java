@@ -181,17 +181,11 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View arg0) {
                 if (isStoragePermissionGranted() && isStoragePermissionGrantedRead()) {
 
-                    Locale locale = getResources().getConfiguration().locale;
-                    filename = new SimpleDateFormat(DATE_FORMAT, locale)
-                            .format(Calendar.getInstance().getTime());
-//                initSave(filename);
-
-                    String blink = blinksSpinner.getSelectedItem().toString();
+                    String directory = directoryName.getText().toString();
                     String operator = operatorName.getText().toString();
                     String base = directoryName.getText().toString();
                     filesListRepository.put(
-                            filename,
-                            blink,
+                            directory,
                             operator,
                             base,
                             dataPoints

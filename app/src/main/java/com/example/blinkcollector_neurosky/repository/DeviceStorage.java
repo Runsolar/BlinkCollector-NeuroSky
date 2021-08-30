@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -93,8 +94,14 @@ public class DeviceStorage {
 
     @NonNull
     public FilesListData[] loadFiles() {
+        return loadFiles(null);
+    }
+
+    @NonNull
+    public FilesListData[] loadFiles(File path) {
+        path = path == null ? rootDir : path;
         List<FilesListData> filesListData = new ArrayList<>();
-        for (File file : listFiles(rootDir)) {
+        for (File file : listFiles(path)) {
             FilesListData data = readFile(file);
             if (data != null) {
                 filesListData.add(data);
@@ -144,7 +151,7 @@ public class DeviceStorage {
         return null;
     }
 
-    private File associatedFile(FilesListData filesListData) {
+    public File associatedFile(FilesListData filesListData) {
         return new File(
                 new Uri.Builder()
                         .appendPath(rootDir.getPath())
@@ -155,6 +162,20 @@ public class DeviceStorage {
                         .build()
                         .getPath()
         );
+    }
+
+    public File zipFiles(String path) {
+        File f;
+        if (path.startsWith(root)) {
+            f = new File(path);
+        } else {
+            f = new File(root, path);
+        }
+        return zipFiles(f);
+    }
+
+    public File zipFiles(File file) {
+        return zipFiles(Arrays.asList(loadFiles(file)));
     }
 
     public File zipFiles(List<FilesListData> filesListData) {
@@ -234,6 +255,18 @@ public class DeviceStorage {
         out.close();
     }
 
+    void deleteDirectory(String path) {
+        File f;
+        if (path.startsWith(root)) {
+            f = new File(path);
+        } else {
+            f = new File(root, path);
+        }
+        if (f.exists()) {
+            deleteDirectory(f);
+        }
+    }
+
     void deleteDirectory(File dir) {
         if (dir == null)
             return;
@@ -272,6 +305,16 @@ public class DeviceStorage {
         return file.getName();
     }
 
+    void normalizeFiles(String path) {
+        File f;
+        if (path.startsWith(root)) {
+            f = new File(path);
+        } else {
+            f = new File(root, path);
+        }
+        normalizeFiles(f);
+    }
+
     void normalizeFiles(String opertator, String directory) {
         File dir = new File(
                 new Uri.Builder()
@@ -281,6 +324,10 @@ public class DeviceStorage {
                         .build()
                         .getPath()
         );
+        normalizeFiles(dir);
+    }
+
+    void normalizeFiles(File dir) {
         File[] files;
         if (!dir.exists() || (files = dir.listFiles()) == null) {
             return;
