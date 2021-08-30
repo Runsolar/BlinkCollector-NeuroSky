@@ -6,11 +6,86 @@
     android:layout_height="match_parent"
     tools:context=".files_list.FilesListActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/tree_view_container"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/directory_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:layout_height="match_parent"/>
+        android:text="Directory:"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/directory"
+        android:layout_width="172dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintEnd_toStartOf="@+id/buttonNormalize"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/directory_label"
+        app:layout_constraintTop_toTopOf="@+id/directory_label" />
+
+    <TextView
+        android:id="@+id/operator_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Operator:"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="@+id/directory_label"
+        app:layout_constraintStart_toStartOf="@+id/directory_label"
+        app:layout_constraintTop_toBottomOf="@+id/directory_label" />
+
+    <Spinner
+        android:id="@+id/operator"
+        android:layout_width="172dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/operator_label"
+        app:layout_constraintEnd_toStartOf="@+id/buttonNormalize"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/operator_label"
+        app:layout_constraintTop_toTopOf="@+id/operator_label" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/operator_label"
+        tools:listitem="@layout/files_list_item" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@android:drawable/stat_sys_download" />
+
+    <Button
+        android:id="@+id/buttonNormalize"
+        android:layout_width="128dp"
+        android:layout_height="62dp"
+        android:layout_marginEnd="8dp"
+        android:text="Normalize filenames"
+        app:layout_constraintBottom_toBottomOf="@+id/operator"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/directory" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
