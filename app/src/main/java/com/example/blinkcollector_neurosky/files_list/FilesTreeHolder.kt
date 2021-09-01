@@ -11,8 +11,7 @@ import com.example.blinkcollector_neurosky.data.TreeItem.TreeItemType.*
 import com.example.blinkcollector_neurosky.repository.FilesListRepository
 import com.unnamed.b.atv.model.TreeNode
 
-class FilesTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<TreeItem>(context) {
-    lateinit var filesListRepository: FilesListRepository
+class FilesTreeHolder(context: Context, val filesListRepository: FilesListRepository) : TreeNode.BaseNodeViewHolder<TreeItem>(context) {
 
     override fun createNodeView(node: TreeNode, item: TreeItem): View {
         val inflater = LayoutInflater.from(context)

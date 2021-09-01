@@ -147,7 +147,7 @@ public class DeviceStorage {
                     points
             );
         } catch (IOException | NumberFormatException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
         return null;
     }

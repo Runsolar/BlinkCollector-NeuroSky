@@ -5,6 +5,7 @@ import com.example.blinkcollector_neurosky.R
 import com.example.blinkcollector_neurosky.data.FilesListData
 import com.example.blinkcollector_neurosky.data.TreeItem
 import com.example.blinkcollector_neurosky.data.TreeItem.TreeItemType.*
+import com.example.blinkcollector_neurosky.repository.FilesListRepository
 import com.unnamed.b.atv.model.TreeNode
 import com.unnamed.b.atv.view.AndroidTreeView
 import dagger.Reusable
@@ -12,8 +13,11 @@ import javax.inject.Inject
 
 @Reusable
 class FilesTreeViewFactory @Inject constructor() {
+    @Inject lateinit var filesListRepository: FilesListRepository
+
     fun createTreeView(context: Context, bases: List<FilesListData>): AndroidTreeView {
         val root = TreeNode.root()
+        val filesTreeHolder = FilesTreeHolder(context, filesListRepository)
 
         bases.map { it.base }.toSet().forEach { baseName ->
             val base = TreeNode(TreeItem(BASE, baseName, baseName))
@@ -29,16 +33,16 @@ class FilesTreeViewFactory @Inject constructor() {
                     val files = blinks.filter { it.blink == blinkName }
                     files.map { it.name }.forEach { fileName ->
                         blink.addChild(TreeNode(TreeItem(FILE, fileName, "${baseName}/${operatorName}/${blinkName}.${fileName}")))
+                                .viewHolder = filesTreeHolder;
                     }
-                    operator.addChild(blink)
+                    operator.addChild(blink).viewHolder = filesTreeHolder;
                 }
-                base.addChild(operator)
+                base.addChild(operator).viewHolder = filesTreeHolder;
             }
-            root.addChild(base)
+            root.addChild(base).viewHolder = filesTreeHolder;
         }
 
         val treeView = AndroidTreeView(context, root)
-        treeView.setDefaultViewHolder(FilesTreeHolder(context).javaClass)
         treeView.setDefaultAnimation(true)
         treeView.setUse2dScroll(true)
         treeView.setDefaultContainerStyle(R.style.TreeNodeStyleCustom)

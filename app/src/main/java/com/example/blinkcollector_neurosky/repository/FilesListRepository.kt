@@ -63,7 +63,7 @@ class FilesListRepository @Inject constructor(
     }
 
     fun normalize(path: String) {
-        deviceStorage.normalizeBlinks(path);
+        deviceStorage.normalizeBase(path);
     }
 
     fun share(context: Context, file: File) {
