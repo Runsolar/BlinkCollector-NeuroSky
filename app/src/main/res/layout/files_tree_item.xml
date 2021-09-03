@@ -33,7 +33,6 @@
         android:layout_height="@dimen/icon_size_small"
         android:layout_margin="4dp"
         android:src="@drawable/ic_delete"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tree_name"
         app:layout_constraintTop_toTopOf="parent" />
@@ -46,6 +45,17 @@
         android:src="@drawable/ic_share"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tree_remove"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tree_norm"
+        android:layout_width="48dp"
+        android:layout_height="@dimen/icon_size_small"
+        android:layout_margin="4dp"
+        android:text="norm"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tree_share"
         app:layout_constraintTop_toTopOf="parent" />
 
 

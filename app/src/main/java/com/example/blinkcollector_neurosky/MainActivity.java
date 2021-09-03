@@ -86,22 +86,22 @@ public class MainActivity extends AppCompatActivity {
 
         initView();
 
-        try {
-            // (1) Make sure that the device supports Bluetooth and Bluetooth is on
-            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
-                Toast.makeText(
-                        this,
-                        "Please enable your Bluetooth and re-run this program !",
-                        Toast.LENGTH_LONG).show();
-                finish();
-//				return;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.i(TAG, "error:" + e.getMessage());
-            return;
-        }
+//        try {
+//            // (1) Make sure that the device supports Bluetooth and Bluetooth is on
+//            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+//            if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
+//                Toast.makeText(
+//                        this,
+//                        "Please enable your Bluetooth and re-run this program !",
+//                        Toast.LENGTH_LONG).show();
+//                finish();
+////				return;
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            Log.i(TAG, "error:" + e.getMessage());
+//            return;
+//        }
 
         // Example of constructor public TgStreamReader(BluetoothAdapter ba, TgStreamHandler tgStreamHandler)
         tgStreamReader = new TgStreamReader(mBluetoothAdapter, callback);
@@ -181,17 +181,11 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View arg0) {
                 if (isStoragePermissionGranted() && isStoragePermissionGrantedRead()) {
 
-                    Locale locale = getResources().getConfiguration().locale;
-                    filename = new SimpleDateFormat(DATE_FORMAT, locale)
-                            .format(Calendar.getInstance().getTime());
-//                initSave(filename);
-
-                    String blink = blinksSpinner.getSelectedItem().toString();
+                    String directory = directoryName.getText().toString();
                     String operator = operatorName.getText().toString();
                     String base = directoryName.getText().toString();
                     filesListRepository.put(
-                            filename,
-                            blink,
+                            directory,
                             operator,
                             base,
                             dataPoints

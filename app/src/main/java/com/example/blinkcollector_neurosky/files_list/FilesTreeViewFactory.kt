@@ -16,19 +16,19 @@ class FilesTreeViewFactory @Inject constructor() {
         val root = TreeNode.root()
 
         bases.map { it.base }.toSet().forEach { baseName ->
-            val base = TreeNode(TreeItem(BASE, baseName))
+            val base = TreeNode(TreeItem(BASE, baseName, baseName))
 
             val operators = bases.filter { it.base == baseName }
             operators.map { it.operator }.toSet().forEach { operatorName ->
-                val operator = TreeNode(TreeItem(OPERATOR, operatorName))
+                val operator = TreeNode(TreeItem(OPERATOR, operatorName, "${baseName}/${operatorName}"))
 
                 val blinks = operators.filter { it.operator == operatorName }
                 blinks.map { it.blink }.toSet().forEach { blinkName ->
-                    val blink = TreeNode(TreeItem(BLINK, blinkName))
+                    val blink = TreeNode(TreeItem(BLINK, blinkName, "${baseName}/${operatorName}/${blinkName}"))
 
                     val files = blinks.filter { it.blink == blinkName }
                     files.map { it.name }.forEach { fileName ->
-                        blink.addChild(TreeNode(TreeItem(FILE, fileName)))
+                        blink.addChild(TreeNode(TreeItem(FILE, fileName, "${baseName}/${operatorName}/${blinkName}/${fileName}")))
                     }
                     operator.addChild(blink)
                 }
