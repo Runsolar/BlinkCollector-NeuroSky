@@ -12,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -38,7 +39,7 @@ class FilesListActivity : AppCompatActivity() {
         super.onAttachedToWindow()
         innerScope = MainScope()
         innerScope.launch {
-            filesListRepository.filesList.collect { files ->
+            filesListRepository.filesList.take(1).collect { files ->
                 treeView = filesTreeViewFactory.createTreeView(
                         this@FilesListActivity,
                         files,
