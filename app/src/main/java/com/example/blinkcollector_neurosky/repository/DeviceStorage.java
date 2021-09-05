@@ -108,7 +108,11 @@ public class DeviceStorage {
                 filesListData.add(data);
             }
         }
-        return filesListData.toArray(new FilesListData[0]);
+        FilesListData[] arr = new FilesListData[filesListData.size()];
+        for (int i = 0; i < filesListData.size(); i++) {
+            arr[i] = filesListData.get(i);
+        }
+        return arr;
     }
 
     public Collection<File> listFiles(File dir) {
