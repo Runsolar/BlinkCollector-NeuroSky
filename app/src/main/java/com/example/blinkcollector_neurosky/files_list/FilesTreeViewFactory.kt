@@ -12,34 +12,42 @@ import dagger.Reusable
 import javax.inject.Inject
 
 @Reusable
-class FilesTreeViewFactory @Inject constructor() {
-    @Inject lateinit var filesListRepository: FilesListRepository
-
-    fun createTreeView(context: Context, bases: List<FilesListData>): AndroidTreeView {
+class FilesTreeViewFactory @Inject constructor(
+        private val filesListRepository: FilesListRepository
+) {
+    fun createTreeView(
+            context: Context,
+            bases: List<FilesListData>,
+            filesTreeListener: FilesTreeListener
+    ): AndroidTreeView {
         val root = TreeNode.root()
-        val filesTreeHolder = FilesTreeHolder(context, filesListRepository)
 
         bases.map { it.base }.toSet().forEach { baseName ->
             val base = TreeNode(TreeItem(BASE, baseName, baseName))
+            base.viewHolder = FilesTreeHolder(context, filesListRepository, filesTreeListener)
 
             val operators = bases.filter { it.base == baseName }
             operators.map { it.operator }.toSet().forEach { operatorName ->
                 val operator = TreeNode(TreeItem(OPERATOR, operatorName, "${baseName}/${operatorName}"))
+                operator.viewHolder = FilesTreeHolder(context, filesListRepository, filesTreeListener)
 
                 val blinks = operators.filter { it.operator == operatorName }
                 blinks.map { it.blink }.toSet().forEach { blinkName ->
                     val blink = TreeNode(TreeItem(BLINK, blinkName, "${baseName}/${operatorName}/${blinkName}"))
+                    blink.viewHolder = FilesTreeHolder(context, filesListRepository, filesTreeListener)
 
                     val files = blinks.filter { it.blink == blinkName }
                     files.map { it.name }.forEach { fileName ->
-                        blink.addChild(TreeNode(TreeItem(FILE, fileName, "${baseName}/${operatorName}/${blinkName}.${fileName}")))
-                                .viewHolder = filesTreeHolder;
+                        val filePath = "$baseName/$operatorName/$blinkName.$fileName"
+                        val file = TreeNode(TreeItem(FILE, fileName, filePath))
+                        file.viewHolder = FilesTreeHolder(context, filesListRepository, filesTreeListener)
+                        blink.addChild(file)
                     }
-                    operator.addChild(blink).viewHolder = filesTreeHolder;
+                    operator.addChild(blink)
                 }
-                base.addChild(operator).viewHolder = filesTreeHolder;
+                base.addChild(operator)
             }
-            root.addChild(base).viewHolder = filesTreeHolder;
+            root.addChild(base)
         }
 
         val treeView = AndroidTreeView(context, root)
