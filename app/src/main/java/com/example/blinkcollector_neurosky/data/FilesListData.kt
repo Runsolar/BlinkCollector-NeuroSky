@@ -6,5 +6,6 @@ data class FilesListData (
         val blink: String,
         val operator: String,
         val base: String,
+        val personName: String,
         val data: List<Point>
 )

@@ -89,31 +89,33 @@
         android:id="@+id/btn_save"
         android:layout_width="150dp"
         android:layout_height="55dp"
-        android:layout_marginBottom="48dp"
+        android:layout_marginBottom="56dp"
         android:text="save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.98"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btn_start"
         android:layout_width="150dp"
         android:layout_height="55dp"
+        android:layout_marginBottom="12dp"
         android:text="start"
-        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@+id/btn_stop"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/btn_stop"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/btn_stop"
         app:rippleColor="#4CAF50" />
 
     <Button
         android:id="@+id/btn_stop"
         android:layout_width="150dp"
         android:layout_height="55dp"
-        android:layout_marginBottom="16dp"
         android:text="stop"
-        app:layout_constraintBottom_toTopOf="@+id/btn_save"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_save"
+        app:layout_constraintEnd_toStartOf="@+id/btn_save"
+        app:layout_constraintHorizontal_bias="0.15"
         app:layout_constraintStart_toStartOf="parent"
         app:rippleColor="#F44336" />
 
@@ -122,18 +124,30 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:text="Inscpect"
+        android:text="Inspect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
         android:id="@+id/blinks_spinner"
-        android:layout_width="220dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="192dp"
+        android:layout_height="42dp"
         android:layout_margin="16dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/directoryName"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/directoryName" />
+
+    <EditText
+        android:id="@+id/personName"
+        android:layout_width="165dp"
+        android:layout_height="52dp"
+        android:ems="10"
+        android:hint="person"
+        android:inputType="textPersonName"
+        android:text="Name"
+        app:layout_constraintBottom_toBottomOf="@+id/blinks_spinner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/operatorName"
+        app:layout_constraintTop_toTopOf="@+id/blinks_spinner" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
