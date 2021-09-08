@@ -38,7 +38,7 @@ class FilesTreeViewFactory @Inject constructor(
 
                     val files = blinks.filter { it.blink == blinkName }
                     files.map { it.name }.forEach { fileName ->
-                        val filePath = "$baseName/$operatorName/$blinkName.$fileName"
+                        val filePath = "$baseName/$operatorName/$blinkName/$fileName"
                         val file = TreeNode(TreeItem(FILE, fileName, filePath))
                         file.viewHolder = FilesTreeHolder(context, filesListRepository, filesTreeListener)
                         blink.addChild(file)

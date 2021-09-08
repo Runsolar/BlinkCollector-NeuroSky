@@ -36,7 +36,7 @@
         android:layout_width="70dp"
         android:layout_height="22dp"
         android:layout_marginTop="12dp"
-        android:text="Operator:"
+        android:text="Person:"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.689"
@@ -79,7 +79,7 @@
         android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="operator1"
+        android:text="person1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.936"
         app:layout_constraintStart_toStartOf="parent"
@@ -89,32 +89,27 @@
         android:id="@+id/btn_save"
         android:layout_width="150dp"
         android:layout_height="55dp"
-        android:layout_marginBottom="48dp"
         android:text="save"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/btn_stop"
+        app:layout_constraintEnd_toEndOf="@+id/blinks_spinner" />
 
     <Button
         android:id="@+id/btn_start"
         android:layout_width="150dp"
         android:layout_height="55dp"
+        android:layout_marginTop="48dp"
         android:text="start"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/btn_stop"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textView5"
+        app:layout_constraintTop_toBottomOf="@+id/textView5"
         app:rippleColor="#4CAF50" />
 
     <Button
         android:id="@+id/btn_stop"
         android:layout_width="150dp"
         android:layout_height="55dp"
-        android:layout_marginBottom="16dp"
         android:text="stop"
-        app:layout_constraintBottom_toTopOf="@+id/btn_save"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/btn_start"
+        app:layout_constraintTop_toBottomOf="@+id/btn_start"
         app:rippleColor="#F44336" />
 
     <Button
@@ -122,7 +117,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:text="Inscpect"
+        android:text="Inspect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -130,10 +125,24 @@
         android:id="@+id/blinks_spinner"
         android:layout_width="220dp"
         android:layout_height="40dp"
-        android:layout_marginTop="16dp"
         android:layout_margin="16dp"
+        android:layout_marginTop="12dp"
+        android:background="#F6F5F5"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/directoryName"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/operatorName" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:text="Select number of blinks"
+        app:layout_constraintBottom_toBottomOf="@+id/blinks_spinner"
+        app:layout_constraintEnd_toStartOf="@+id/blinks_spinner"
+        app:layout_constraintTop_toTopOf="@+id/blinks_spinner"
+        app:layout_constraintVertical_bias="0.428" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

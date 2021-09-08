@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
     FilesListRepository filesListRepository;
 
     ArrayList<Integer> rawData = new ArrayList<Integer>(Collections.nCopies(1536, 0)); // 512 Hz - 3 seconds 1536
-    String[] numberOfBlinks = {"2 blinks", "3 blinks", "4 blinks"};
+    String[] numberOfBlinks = {"2", "3", "4"};
 
     String filename = null;
 
@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         btn_stop = (Button) findViewById(R.id.btn_stop);
         btn_stop.setEnabled(false);
         btn_save = (Button) findViewById(R.id.btn_save);
-        btn_save.setEnabled(false);
+//        btn_save.setEnabled(false);
 
         blinksSpinner = (Spinner) findViewById(R.id.blinks_spinner);
 
@@ -181,11 +181,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View arg0) {
                 if (isStoragePermissionGranted() && isStoragePermissionGrantedRead()) {
 
-                    String directory = directoryName.getText().toString();
-                    String operator = operatorName.getText().toString();
                     String base = directoryName.getText().toString();
+                    String operator = operatorName.getText().toString();
+                    String blink = blinksSpinner.getSelectedItem().toString();
+
                     filesListRepository.put(
-                            directory,
+                            blink,
                             operator,
                             base,
                             dataPoints
@@ -193,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 btn_start.setEnabled(true);
                 btn_stop.setEnabled(false);
-                btn_save.setEnabled(false);
+                //btn_save.setEnabled(false);
             }
         });
 

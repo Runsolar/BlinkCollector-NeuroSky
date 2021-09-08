@@ -23,8 +23,10 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -38,7 +40,7 @@ public class DeviceStorage {
 
     private static final String root = Environment.getExternalStorageDirectory().toString();
     private static final String appFolderName = "BlinkCollector";
-    private static final File rootDir = new File(
+    public static final File rootDir = new File(
             new Uri.Builder()
                     .appendPath(root)
                     .appendPath(appFolderName)
@@ -61,7 +63,7 @@ public class DeviceStorage {
     }
 
     public void saveFile(@NonNull FilesListData data) {
-        File file = associatedFile(data);
+        File file = data.associatedFile();
         if (!file.exists()) {
             try {
                 file.getParentFile().mkdirs();
@@ -74,7 +76,7 @@ public class DeviceStorage {
         try {
             FileOutputStream fout = new FileOutputStream(file);
             for (Point p : data.getData()) {
-                fout.write(String.format("%f;%f\n", p.getX(), p.getY()).getBytes());
+                fout.write(String.format("%f\n", p.getY()).getBytes());
             }
 
         } catch (Exception e) {
@@ -84,7 +86,7 @@ public class DeviceStorage {
     }
 
     public void removeFile(@NonNull FilesListData data) {
-        File file = associatedFile(data);
+        File file = data.associatedFile();
         if (file.exists()) {
             file.delete();
             if (file.getParentFile().listFiles() == null) {
@@ -135,46 +137,50 @@ public class DeviceStorage {
         List<Point> points = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
+            int x = 0;
             while ((line = br.readLine()) != null) {
                 points.add(
                         new Point(
-                                Double.parseDouble(line.split(";")[0]),
-                                Double.parseDouble(line.split(";")[1])
+                                x++,
+                                Double.parseDouble(line)
                         )
                 );
             }
             return new FilesListData(
-                    file.getName(),
-                    blink,
-                    operator,
                     base,
+                    operator,
+                    blink,
+                    file.getName(),
                     points
             );
         } catch (IOException | NumberFormatException e) {
-//            e.printStackTrace();
+            e.printStackTrace();
         }
         return null;
     }
 
-    public File associatedFile(FilesListData filesListData) {
-        return new File(
-                new Uri.Builder()
-                        .appendPath(rootDir.getPath())
-                        .appendPath(filesListData.getBase())
-                        .appendPath(filesListData.getOperator())
-                        .appendPath(filesListData.getBlink())
-                        .appendPath(filesListData.getName())
-                        .build()
-                        .getPath()
-        );
+    public File prepareForShare(String path) {
+        File f;
+        if (path.startsWith(rootDir.getPath())) {
+            f = new File(path);
+        } else {
+            f = new File(rootDir, path);
+        }
+        if (f.exists()) {
+            if (f.isFile()) {
+                return f;
+            }
+            return zipFiles(f);
+        }
+        throw new RuntimeException("File does not exist");
     }
 
     public File zipFiles(String path) {
         File f;
-        if (path.startsWith(root)) {
+        if (path.startsWith(rootDir.getPath())) {
             f = new File(path);
         } else {
-            f = new File(root, path);
+            f = new File(rootDir, path);
         }
         return zipFiles(f);
     }
@@ -197,7 +203,7 @@ public class DeviceStorage {
             FileOutputStream fos = new FileOutputStream(zipFile);
             ZipOutputStream zipOut = new ZipOutputStream(fos);
             for (FilesListData data : filesListData) {
-                File f = associatedFile(data);
+                File f = data.associatedFile();
                 if (f.exists()) {
                     if (!operator.equals(data.getOperator())) {
                         operator = null;
@@ -262,10 +268,10 @@ public class DeviceStorage {
 
     void deleteDirectory(String path) {
         File f;
-        if (path.startsWith(root)) {
+        if (path.startsWith(rootDir.getPath())) {
             f = new File(path);
         } else {
-            f = new File(root, path);
+            f = new File(rootDir, path);
         }
         if (f.exists()) {
             deleteDirectory(f);
@@ -289,27 +295,6 @@ public class DeviceStorage {
         dir.delete();
     }
 
-    String generateFileName(String opertator, String directory) {
-        File dir = new File(
-                new Uri.Builder()
-                        .appendPath(rootDir.getPath())
-                        .appendPath(opertator)
-                        .appendPath(directory)
-                        .build()
-                        .getPath()
-        );
-        File[] files;
-        if (!dir.exists() || (files = dir.listFiles()) == null) {
-            return new File(dir, "data1.txt").getPath();
-        }
-        int offset = 1;
-        File file = new File(dir, "data" + (files.length + offset) + ".txt");
-        while (file.exists()) {
-            file = new File(dir, "data" + (files.length + ++offset) + ".txt");
-        }
-        return file.getName();
-    }
-
     void normalizeBlinks(String opertator, String directory) {
         File dir = new File(
                 new Uri.Builder()
@@ -324,10 +309,10 @@ public class DeviceStorage {
 
     void normalizeBase(String path) {
         File f;
-        if (path.startsWith(root)) {
+        if (path.startsWith(rootDir.getPath())) {
             f = new File(path);
         } else {
-            f = new File(root, path);
+            f = new File(rootDir, path);
         }
         File[] operators = f.listFiles(new FileFilter() {
             @Override
@@ -358,24 +343,18 @@ public class DeviceStorage {
         if (!dir.exists() || (files = dir.listFiles()) == null) {
             return;
         }
-        ArrayList<Integer> numbers = new ArrayList<>();
+        Map<String, List<Integer>> namePrefixes = new HashMap();
         for (File f : files) {
             try {
-                int num = Integer.parseInt(f.getName().replace("data", "").replace(".txt", ""));
-                numbers.add(num);
+                String prefix = f.getName().split("_f")[0];
+                int num = Integer.parseInt(f.getName().split("_f")[1].replace(".txt", ""));
+                if (!namePrefixes.containsKey(prefix)) {
+                    namePrefixes.put(prefix, Arrays.asList(num));
+                } else {
+                    namePrefixes.get(prefix).add(num);
+                }
             } catch (NumberFormatException e) {
                 e.printStackTrace();
-            }
-        }
-        Collections.sort(numbers);
-        int currentNumber = 0;
-        for (Integer number : numbers) {
-            File f = new File(dir, "data" + number + ".txt");
-            if (f.exists()) {
-                currentNumber++;
-                if (number != currentNumber) {
-                    f.renameTo(new File(dir, "data" + currentNumber + ".txt"));
-                }
             }
         }
 

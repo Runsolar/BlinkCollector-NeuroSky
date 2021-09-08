@@ -38,7 +38,7 @@ class FilesTreeHolder(
         }
 
         binding.treeShare.setOnClickListener {
-            filesListRepository.share(context, filesListRepository.zip(item.path))
+            filesListRepository.share(context, filesListRepository.prepareForShare(item.path))
         }
 
         if (item.type == BASE) {
