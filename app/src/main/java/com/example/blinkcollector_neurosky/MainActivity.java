@@ -1,6 +1,7 @@
 package com.example.blinkcollector_neurosky;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -332,7 +333,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int MSG_UPDATE_BAD_PACKET = 1001;
     private static final int MSG_UPDATE_STATE = 1002;
 
-    //int raw;
+    @SuppressLint("HandlerLeak")
     private Handler LinkDetectedHandler = new Handler() {
 
         @Override
