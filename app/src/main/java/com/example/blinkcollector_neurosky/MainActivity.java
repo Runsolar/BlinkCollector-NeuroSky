@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         series1 = new LineGraphSeries<DataPoint>(dataPoints);
-        series1.setTitle("Oz EEG data");
+        series1.setTitle("Fpz EEG data");
         series1.setColor(Color.GREEN);
 
         graph1.addSeries(series1);
