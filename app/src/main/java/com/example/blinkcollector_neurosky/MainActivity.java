@@ -377,7 +377,7 @@ public class MainActivity extends AppCompatActivity {
 
         series1.resetData(dataPoints);
     }
- */
+
     public boolean isStoragePermissionGranted() {
         String TAG = "Storage Permission";
         if (Build.VERSION.SDK_INT >= 23) {
