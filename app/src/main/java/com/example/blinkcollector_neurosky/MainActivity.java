@@ -19,6 +19,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -86,28 +87,28 @@ public class MainActivity extends AppCompatActivity {
 
         initView();
 
-//        try {
-//            // (1) Make sure that the device supports Bluetooth and Bluetooth is on
-//            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-//            if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
-//                Toast.makeText(
-//                        this,
-//                        "Please enable your Bluetooth and re-run this program !",
-//                        Toast.LENGTH_LONG).show();
-//                finish();
-////				return;
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            Log.i(TAG, "error:" + e.getMessage());
-//            return;
-//        }
+        try {
+            // Make sure that the device supports Bluetooth and Bluetooth is on
+            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
+                Toast.makeText(
+                        this,
+                        "Please enable your Bluetooth and re-run this program !",
+                        Toast.LENGTH_LONG).show();
+                finish();
+//				return;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i(TAG, "error:" + e.getMessage());
+            return;
+        }
 
         // Example of constructor public TgStreamReader(BluetoothAdapter ba, TgStreamHandler tgStreamHandler)
         tgStreamReader = new TgStreamReader(mBluetoothAdapter, callback);
-        // (2) Demo of setGetDataTimeOutTime, the default time is 5s, please call it before connect() of connectAndStart()
+        // setGetDataTimeOutTime, the default time is 5s, please call it before connect() of connectAndStart()
         tgStreamReader.setGetDataTimeOutTime(6);
-        // (3) Demo of startLog, you will get more sdk log by logcat if you call this function
+        // startLog, you will get more sdk log by logcat if you call this function
         tgStreamReader.startLog();
 
     }
@@ -145,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
                 //Log.d("iBlink", "onClick Start!!!");
                 badPacketCount = 0;
 
-                // (5) demo of isBTConnected
+                // isBTConnected
                 if (tgStreamReader != null && tgStreamReader.isBTConnected()) {
 
                     // Prepare for connecting
@@ -153,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
                     tgStreamReader.close();
                 }
 
-                // (4) Demo of  using connect() and start() to replace connectAndStart(),
+                // Using connect() and start() to replace connectAndStart(),
                 // please call start() when the state is changed to STATE_CONNECTED
                 tgStreamReader.connect();
                 //tgStreamReader.connectAndStart();
@@ -232,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    // (7) demo of TgStreamHandler
+    // TgStreamHandler
     private TgStreamHandler callback = new TgStreamHandler() {
 
         @Override
@@ -251,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
                 case ConnectionStates.STATE_WORKING:
                     // Do something when working
 
-                    //(9) demo of recording raw data , stop() will call stopRecordRawData,
+                    // Recording raw data , stop() will call stopRecordRawData,
                     //or you can add a button to control it.
                     //You can change the save path by calling setRecordStreamFilePath(String filePath) before startRecordRawData
                     tgStreamReader.startRecordRawData();
@@ -260,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
                 case ConnectionStates.STATE_GET_DATA_TIME_OUT:
                     // Do something when getting data timeout
 
-                    //(9) demo of recording raw data, exception handling
+                    // Recording raw data, exception handling
                     tgStreamReader.stopRecordRawData();
 
                     showToast("Get data time out!", Toast.LENGTH_SHORT);
@@ -335,19 +336,17 @@ public class MainActivity extends AppCompatActivity {
     private Handler LinkDetectedHandler = new Handler() {
 
         @Override
-        public void handleMessage(Message msg) {
-            // (8) demo of MindDataType
+        public void handleMessage(@NonNull Message msg) {
+            // MindDataType
             switch (msg.what) {
                 case MindDataType.CODE_RAW:
                     proccessDataWave(msg.arg1);
                     break;
                 case MindDataType.CODE_MEDITATION:
                     Log.d(TAG, "HeadDataType.CODE_MEDITATION " + msg.arg1);
-                    //tv_meditation.setText("" +msg.arg1 );
                     break;
                 case MindDataType.CODE_ATTENTION:
                     Log.d(TAG, "CODE_ATTENTION " + msg.arg1);
-                    //tv_attention.setText("" +msg.arg1 );
                     break;
                 case MindDataType.CODE_EEGPOWER:
                     EEGPower power = (EEGPower) msg.obj;
@@ -401,16 +400,10 @@ public class MainActivity extends AppCompatActivity {
 
         //series1 = new LineGraphSeries<DataPoint>(dataPoints);
         series1.resetData(dataPoints);
-
-        //graph1.addSeries(series1);
-
-        //System.out.println(rawData.size());
-        //System.out.println(rawData.toString());
-
     }
 
+    /*
     FileOutputStream fout = null;
-
     void initSave(String filename) {
         String root = Environment.getExternalStorageDirectory().toString();
         if (isStoragePermissionGranted() && isStoragePermissionGrantedRead()) {
@@ -443,7 +436,7 @@ public class MainActivity extends AppCompatActivity {
             );
         }
     }
-
+ */
     public boolean isStoragePermissionGranted() {
         String TAG = "Storage Permission";
         if (Build.VERSION.SDK_INT >= 23) {
@@ -489,4 +482,5 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
     }
+
 }
