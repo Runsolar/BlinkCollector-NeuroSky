@@ -5,12 +5,14 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.blinkcollector_neurosky.databinding.ActivityFilesListBinding
 import com.example.blinkcollector_neurosky.repository.FilesListRepository
+import com.unnamed.b.atv.model.TreeNode
 import com.unnamed.b.atv.view.AndroidTreeView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -37,11 +39,19 @@ class FilesListActivity : AppCompatActivity() {
         super.onAttachedToWindow()
         innerScope = MainScope()
         innerScope.launch {
-            filesListRepository.filesList.collect {
-                treeView = filesTreeViewFactory.createTreeView(this@FilesListActivity, it)
+            filesListRepository.filesList.take(1).collect { files ->
+                treeView = filesTreeViewFactory.createTreeView(
+                        this@FilesListActivity,
+                        files,
+                        object : FilesTreeListener {
+                            override fun removeNode(node: TreeNode) {
+                                treeView.removeNode(node)
+                            }
+                        }
+                )
                 binding.treeViewContainer.removeAllViews()
                 binding.treeViewContainer.addView(treeView.view)
-                treeView.expandAll()
+                treeView.expandLevel(2)
             }
         }
     }

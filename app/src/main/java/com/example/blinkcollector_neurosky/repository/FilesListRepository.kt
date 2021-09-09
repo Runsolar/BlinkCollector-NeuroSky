@@ -27,9 +27,7 @@ class FilesListRepository @Inject constructor(
     }
 
     fun put(blink: String, operator: String, base: String, dataPoints: Array<DataPoint>) {
-        val name = deviceStorage.generateFileName(operator, blink);
         val data = FilesListData(
-                name = name,
                 blink = blink,
                 operator = operator,
                 base = base,
@@ -48,6 +46,10 @@ class FilesListRepository @Inject constructor(
     fun remove(data: FilesListData) {
         mutableFilesList.value -= data
         deviceStorage.removeFile(data)
+    }
+
+    fun prepareForShare(path: String): File {
+        return deviceStorage.prepareForShare(path);
     }
 
     fun zip(path: String): File {
@@ -70,7 +72,11 @@ class FilesListRepository @Inject constructor(
         val uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", file)
         val intent = Intent(Intent.ACTION_SEND)
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        intent.setType("*/*")
+        if (file.path.endsWith(".txt")) {
+            intent.setType("text/plain")
+        } else {
+            intent.setType("application/zip")
+        }
         intent.putExtra(Intent.EXTRA_STREAM, uri)
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(context, intent, Bundle.EMPTY)
