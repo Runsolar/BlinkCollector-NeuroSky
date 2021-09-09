@@ -1,14 +1,13 @@
 package com.example.blinkcollector_neurosky;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.media.MediaScannerConnection;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -34,14 +33,8 @@ import com.neurosky.connection.EEGPower;
 import com.neurosky.connection.TgStreamHandler;
 import com.neurosky.connection.TgStreamReader;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -70,12 +63,12 @@ public class MainActivity extends AppCompatActivity {
     FilesListRepository filesListRepository;
 
     ArrayList<Integer> rawData = new ArrayList<Integer>(Collections.nCopies(1536, 0)); // 512 Hz - 3 seconds 1536
-    String[] numberOfBlinks = {"2 blinks", "3 blinks", "4 blinks"};
+    String[] numberOfBlinks = {"2", "3", "4"};
 
     String filename = null;
 
     private LineGraphSeries<DataPoint> series1 = null;
-    DataPoint[] dataPoints;
+    DataPoint[] dataPoints = {};
 
     private int badPacketCount = 0;
 
@@ -87,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         initView();
 
 //        try {
-//            // (1) Make sure that the device supports Bluetooth and Bluetooth is on
+//            // Make sure that the device supports Bluetooth and Bluetooth is on
 //            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 //            if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
 //                Toast.makeText(
@@ -105,9 +98,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Example of constructor public TgStreamReader(BluetoothAdapter ba, TgStreamHandler tgStreamHandler)
         tgStreamReader = new TgStreamReader(mBluetoothAdapter, callback);
-        // (2) Demo of setGetDataTimeOutTime, the default time is 5s, please call it before connect() of connectAndStart()
+        //setGetDataTimeOutTime, the default time is 5s, please call it before connect() of connectAndStart()
         tgStreamReader.setGetDataTimeOutTime(6);
-        // (3) Demo of startLog, you will get more sdk log by logcat if you call this function
+        //startLog, you will get more sdk log by logcat if you call this function
         tgStreamReader.startLog();
 
     }
@@ -126,8 +119,6 @@ public class MainActivity extends AppCompatActivity {
 
         btnToFiles = findViewById(R.id.btn_to_files);
 
-        dataPoints = new DataPoint[rawData.size()];
-
         directoryName = findViewById(R.id.directoryName);
 
         operatorName = findViewById(R.id.operatorName);
@@ -144,8 +135,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View arg0) {
                 //Log.d("iBlink", "onClick Start!!!");
                 badPacketCount = 0;
-
-                // (5) demo of isBTConnected
+                dataPoints = new DataPoint[rawData.size()];
+                //isBTConnected
                 if (tgStreamReader != null && tgStreamReader.isBTConnected()) {
 
                     // Prepare for connecting
@@ -153,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
                     tgStreamReader.close();
                 }
 
-                // (4) Demo of  using connect() and start() to replace connectAndStart(),
+                //connect() and start() to replace connectAndStart(),
                 // please call start() when the state is changed to STATE_CONNECTED
                 tgStreamReader.connect();
                 //tgStreamReader.connectAndStart();
@@ -179,13 +170,14 @@ public class MainActivity extends AppCompatActivity {
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                if (isStoragePermissionGranted() && isStoragePermissionGrantedRead()) {
+                if (dataPoints.length > 0 && isStoragePermissionGranted() && isStoragePermissionGrantedRead()) {
 
-                    String directory = directoryName.getText().toString();
-                    String operator = operatorName.getText().toString();
                     String base = directoryName.getText().toString();
+                    String operator = operatorName.getText().toString();
+                    String blink = blinksSpinner.getSelectedItem().toString();
+
                     filesListRepository.put(
-                            directory,
+                            blink,
                             operator,
                             base,
                             dataPoints
@@ -216,22 +208,23 @@ public class MainActivity extends AppCompatActivity {
         graph1.getViewport().setMinX(0);
         graph1.getViewport().setMaxX(800);
 
+        Intent intent = getIntent();
+        if (intent.getExtras() != null && intent.getExtras().containsKey("data")) {
+            Double[] message = (Double[]) intent.getExtras().get("data");
+            if (message != null) {
+                dataPoints = new DataPoint[message.length];
+                for (int i = 0; i < message.length; ++i) {
+                    dataPoints[i] = new DataPoint(i, message[i]);
+                }
 
-        for (int i = 0; i < rawData.size(); ++i) {
-            // add new DataPoint object to the array for each of your list entries
-            dataPoints[i] = new DataPoint(i, rawData.get(i));
+                series1 = new LineGraphSeries<DataPoint>(dataPoints);
+                series1.setTitle("Fpz EEG data");
+                series1.setColor(Color.GREEN);
+                graph1.addSeries(series1);
+            }
         }
-
-        series1 = new LineGraphSeries<DataPoint>(dataPoints);
-        series1.setTitle("Oz EEG data");
-        series1.setColor(Color.GREEN);
-
-        graph1.addSeries(series1);
-
     }
 
-
-    // (7) demo of TgStreamHandler
     private TgStreamHandler callback = new TgStreamHandler() {
 
         @Override
@@ -250,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
                 case ConnectionStates.STATE_WORKING:
                     // Do something when working
 
-                    //(9) demo of recording raw data , stop() will call stopRecordRawData,
+                    //Recording raw data , stop() will call stopRecordRawData,
                     //or you can add a button to control it.
                     //You can change the save path by calling setRecordStreamFilePath(String filePath) before startRecordRawData
                     tgStreamReader.startRecordRawData();
@@ -259,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
                 case ConnectionStates.STATE_GET_DATA_TIME_OUT:
                     // Do something when getting data timeout
 
-                    //(9) demo of recording raw data, exception handling
+                    //Recording raw data, exception handling
                     tgStreamReader.stopRecordRawData();
 
                     showToast("Get data time out!", Toast.LENGTH_SHORT);
@@ -330,12 +323,12 @@ public class MainActivity extends AppCompatActivity {
     private static final int MSG_UPDATE_BAD_PACKET = 1001;
     private static final int MSG_UPDATE_STATE = 1002;
 
-    //int raw;
+    @SuppressLint("HandlerLeak")
     private Handler LinkDetectedHandler = new Handler() {
 
         @Override
         public void handleMessage(Message msg) {
-            // (8) demo of MindDataType
+            //MindDataType
             switch (msg.what) {
                 case MindDataType.CODE_RAW:
                     proccessDataWave(msg.arg1);
@@ -348,24 +341,9 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG, "CODE_ATTENTION " + msg.arg1);
                     //tv_attention.setText("" +msg.arg1 );
                     break;
-                case MindDataType.CODE_EEGPOWER:
-                    EEGPower power = (EEGPower) msg.obj;
-                    if (power.isValidate()) {
-                        //tv_delta.setText("" +power.delta);
-                        //tv_theta.setText("" +power.theta);
-                        //tv_lowalpha.setText("" +power.lowAlpha);
-                        //tv_highalpha.setText("" +power.highAlpha);
-                        //tv_lowbeta.setText("" +power.lowBeta);
-                        //tv_highbeta.setText("" +power.highBeta);
-                        //tv_lowgamma.setText("" +power.lowGamma);
-                        //tv_middlegamma.setText("" +power.middleGamma);
-                    }
-                    break;
                 case MindDataType.CODE_POOR_SIGNAL://
                     int poorSignal = msg.arg1;
                     Log.d(TAG, "poorSignal:" + poorSignal);
-                    //tv_ps.setText(""+msg.arg1);
-
                     break;
                 case MSG_UPDATE_BAD_PACKET:
                     //tv_badpacket.setText("" + msg.arg1);
@@ -398,49 +376,7 @@ public class MainActivity extends AppCompatActivity {
             dataPoints[i] = new DataPoint(i, rawData.get(i)); // not sure but I think the second argument should be of type double
         }
 
-        //series1 = new LineGraphSeries<DataPoint>(dataPoints);
         series1.resetData(dataPoints);
-
-        //graph1.addSeries(series1);
-
-        //System.out.println(rawData.size());
-        //System.out.println(rawData.toString());
-
-    }
-
-    FileOutputStream fout = null;
-
-    void initSave(String filename) {
-        String root = Environment.getExternalStorageDirectory().toString();
-        if (isStoragePermissionGranted() && isStoragePermissionGrantedRead()) {
-            File myDir = new File(root, "/mind_wave");
-            if (!myDir.exists()) {
-                myDir.mkdirs();
-            }
-            String fname = filename;
-            File file = new File(myDir, fname);
-
-            try {
-                if (!file.getParentFile().exists())
-                    file.getParentFile().mkdirs();
-                if (!file.exists()) {
-                    try {
-                        file.createNewFile();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                fout = new FileOutputStream(file);
-
-            } catch (Exception e) {
-            }
-            MediaScannerConnection.scanFile(
-                    getApplicationContext(),
-                    new String[]{file.toString()},
-                    new String[]{file.getName()},
-                    null
-            );
-        }
     }
 
     public boolean isStoragePermissionGranted() {

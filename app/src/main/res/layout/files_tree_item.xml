@@ -54,6 +54,7 @@
         android:layout_margin="4dp"
         android:text="norm"
         android:textAlignment="center"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tree_share"
         app:layout_constraintTop_toTopOf="parent" />
