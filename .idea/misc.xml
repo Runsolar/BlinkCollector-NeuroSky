@@ -4,8 +4,13 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/USER/AndroidStudioProjects/BlinkCollector-NeuroSky-1/app/src/main/res/layout/activity_files_list.xml" value="0.4" />
-        <entry key="..\:/Users/USER/AndroidStudioProjects/BlinkCollector-NeuroSky-1/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/USER/AndroidStudioProjects/BlinkCollector-NeuroSky-1/app/src/main/res/layout/activity_main.xml" value="0.264" />
         <entry key="..\:/Users/USER/AndroidStudioProjects/BlinkCollector-NeuroSky-1/app/src/main/res/layout/files_list_item.xml" value="0.1" />
+        <entry key="..\:/Users/USER/AndroidStudioProjects/BlinkCollector-NeuroSky-1/app/src/main/res/layout/files_tree_item.xml" value="0.17447916666666666" />
+        <entry key="..\:/Users/USER/AndroidStudioProjects/BlinkCollector-NeuroSky-1/app/src/main/res/xml/provider_paths.xml" value="0.1" />
+        <entry key="..\:/android/BlinkCollector-NeuroSky/app/src/main/res/layout/activity_files_list.xml" value="0.20520833333333333" />
+        <entry key="..\:/android/BlinkCollector-NeuroSky/app/src/main/res/layout/activity_main.xml" value="0.20520833333333333" />
+        <entry key="..\:/android/BlinkCollector-NeuroSky/app/src/main/res/layout/files_tree_item.xml" value="0.25" />
       </map>
     </option>
   </component>
