@@ -31,7 +31,7 @@ class FilesListRepository @Inject constructor(
                 blink = blink,
                 operator = operator,
                 base = base,
-                data = dataPoints.map { Point(it.x, it.y) }
+                data = dataPoints.filterNotNull().map { Point(it.x, it.y) }
         )
 
         mutableFilesList.value += data

@@ -78,7 +78,6 @@ public class DeviceStorage {
             for (Point p : data.getData()) {
                 fout.write(String.format("%f\n", p.getY()).getBytes());
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -346,8 +345,8 @@ public class DeviceStorage {
         Map<String, List<Integer>> namePrefixes = new HashMap();
         for (File f : files) {
             try {
-                String prefix = f.getName().split("_f")[0];
-                int num = Integer.parseInt(f.getName().split("_f")[1].replace(".txt", ""));
+                String prefix = f.getName().substring(0, f.getName().lastIndexOf("f"));
+                int num = Integer.parseInt(f.getName().replace(prefix, "").replace(".txt", ""));
                 if (!namePrefixes.containsKey(prefix)) {
                     namePrefixes.put(prefix, Arrays.asList(num));
                 } else {

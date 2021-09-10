@@ -18,14 +18,14 @@ data class FilesListData (
             var files: Array<File> = arrayOf()
             val baseName = base.replace("database", "db")
             val operatorName = operator.replace("operator", "op")
-            val blinkName = blink.replace("wink", "w").replace("blink", "w")
+            val blinkName = "w$blink";
             if (!dir.exists() || dir.listFiles().also { files = it } == null) {
-                name = "${baseName}${operatorName}${blinkName}_f1.txt".replace(" ", "")
+                name = "${baseName}${operatorName}${blinkName}f1.txt".replace(" ", "")
             } else {
                 var offset = 1
-                var file = File("${dir.path}/${baseName}${operatorName}${blinkName}_f${files.size + offset}.txt")
+                var file = File("${dir.path}/${baseName}${operatorName}${blinkName}f${files.size + offset}.txt")
                 while (file.exists()) {
-                    file = File("${dir.path}/${baseName}${operatorName}${blinkName}_f${files.size + ++offset}.txt")
+                    file = File("${dir.path}/${baseName}${operatorName}${blinkName}f${files.size + ++offset}.txt")
                 }
                 name = file.name.replace(" ", "")
             }
