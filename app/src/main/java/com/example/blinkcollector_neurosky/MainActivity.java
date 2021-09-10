@@ -209,6 +209,19 @@ public class MainActivity extends AppCompatActivity {
         graph1.getViewport().setMinX(0);
         graph1.getViewport().setMaxX(800);
 
+        dataPoints = new DataPoint[rawData.size()];
+        for (int i = 0; i < rawData.size(); ++i) {
+            dataPoints[i] = new DataPoint(i, rawData.get(i));
+        }
+
+        series1 = new LineGraphSeries<DataPoint>(dataPoints);
+        series1.setTitle("Fpz EEG data");
+        series1.setColor(Color.GREEN);
+        graph1.addSeries(series1);
+
+        //В таком варианте при нажатии на старт все крашится, ошибка инициализации очевидна!
+        // Вернул как было
+/*
         Intent intent = getIntent();
         if (intent.getExtras() != null && intent.getExtras().containsKey("data")) {
             Double[] message = (Double[]) intent.getExtras().get("data");
@@ -224,6 +237,8 @@ public class MainActivity extends AppCompatActivity {
                 graph1.addSeries(series1);
             }
         }
+
+ */
     }
 
   private TgStreamHandler callback = new TgStreamHandler() {
