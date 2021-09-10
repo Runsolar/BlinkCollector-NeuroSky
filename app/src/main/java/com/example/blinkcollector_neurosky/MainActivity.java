@@ -220,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
         graph1.addSeries(series1);
 
         //В таком варианте при нажатии на старт все крашится, ошибка инициализации очевидна!
-        // Вернул как было
+        // Вернул как было, исправляйте!
 /*
         Intent intent = getIntent();
         if (intent.getExtras() != null && intent.getExtras().containsKey("data")) {
