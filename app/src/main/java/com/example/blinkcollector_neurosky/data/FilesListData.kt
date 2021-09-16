@@ -43,4 +43,7 @@ data class FilesListData (
                         .build()
                         .path
         ); }
+
+    val path: String
+        get() = "$base/$operator/$blink/$name"
 }

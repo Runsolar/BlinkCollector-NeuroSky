@@ -6,11 +6,33 @@
     android:layout_height="match_parent"
     tools:context=".files_list.FilesListActivity">
 
+    <com.jjoe64.graphview.GraphView
+        android:id="@+id/preview_container"
+        android:layout_width="match_parent"
+        android:layout_height="196dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/btn_close"
+        android:layout_width="@dimen/icon_size"
+        android:layout_height="@dimen/icon_size"
+        android:src="@drawable/ic_close"
+        android:layout_margin="8dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible"/>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/tree_view_container"
         android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_margin="8dp"
-        android:layout_height="match_parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/preview_container"
+        tools:layout_editor_absoluteX="8dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
