@@ -82,4 +82,7 @@ class FilesListRepository @Inject constructor(
         startActivity(context, intent, Bundle.EMPTY)
     }
 
+    fun getFilesListData(path: String): FilesListData? {
+        return mutableFilesList.value.firstOrNull { it.path == path }
+    }
 }
