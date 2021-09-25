@@ -16,11 +16,13 @@ class FilesTreeHolder(
         private val filesListRepository: FilesListRepository,
         private val filesTreeListener: FilesTreeListener
 ) : TreeNode.BaseNodeViewHolder<TreeItem>(context) {
+    private lateinit var binding: FilesTreeItemBinding
+    private var isSelected = false
 
     override fun createNodeView(node: TreeNode, item: TreeItem): View {
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.files_tree_item, null, false)
-        val binding = FilesTreeItemBinding.bind(view)
+        binding = FilesTreeItemBinding.bind(view)
 
         binding.treeName.text = item.name
 
@@ -32,6 +34,9 @@ class FilesTreeHolder(
         })
 
         binding.treeRemove.setOnClickListener {
+            if (isSelected) {
+                filesTreeListener.hideChart()
+            }
             filesListRepository.remove(item.path)
             filesTreeListener.removeNode(node)
         }
@@ -50,10 +55,20 @@ class FilesTreeHolder(
 
         if (item.type == FILE) {
             binding.treeName.setOnClickListener {
+                filesTreeListener.unselectAll()
+                setSelected(true)
                 filesTreeListener.showChart(item.path)
             }
         }
 
         return view
+    }
+
+    fun setSelected(selected: Boolean) {
+        isSelected = selected
+        val resource = if (isSelected) R.color.selected_node else R.color.white
+        if(this::binding.isInitialized) {
+            binding.background.setBackgroundResource(resource)
+        }
     }
 }

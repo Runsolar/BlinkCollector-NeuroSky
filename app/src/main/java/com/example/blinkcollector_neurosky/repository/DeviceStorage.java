@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -130,6 +129,7 @@ public class DeviceStorage {
 
     @Nullable
     private FilesListData readFile(File file) {
+        FilesListData data = null;
         String blink = file.getParentFile().getName();
         String operator = file.getParentFile().getParentFile().getName();
         String base = file.getParentFile().getParentFile().getParentFile().getName();
@@ -138,6 +138,7 @@ public class DeviceStorage {
             String line;
             int x = 0;
             while ((line = br.readLine()) != null) {
+                line = line.replace(',', '.');
                 points.add(
                         new Point(
                                 x++,
@@ -145,7 +146,7 @@ public class DeviceStorage {
                         )
                 );
             }
-            return new FilesListData(
+            data = new FilesListData(
                     base,
                     operator,
                     blink,
@@ -155,7 +156,7 @@ public class DeviceStorage {
         } catch (IOException | NumberFormatException e) {
             e.printStackTrace();
         }
-        return null;
+        return data;
     }
 
     public File prepareForShare(String path) {

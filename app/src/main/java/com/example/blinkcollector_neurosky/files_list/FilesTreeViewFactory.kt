@@ -17,11 +17,10 @@ class FilesTreeViewFactory @Inject constructor(
 ) {
     fun createTreeView(
             context: Context,
+            root: TreeNode,
             bases: List<FilesListData>,
             filesTreeListener: FilesTreeListener
     ): AndroidTreeView {
-        val root = TreeNode.root()
-
         bases.map { it.base }.toSet().forEach { baseName ->
             val base = TreeNode(TreeItem(BASE, baseName, baseName))
             base.viewHolder = FilesTreeHolder(context, filesListRepository, filesTreeListener)
@@ -51,7 +50,7 @@ class FilesTreeViewFactory @Inject constructor(
         }
 
         val treeView = AndroidTreeView(context, root)
-        treeView.setDefaultAnimation(true)
+        treeView.setDefaultAnimation(false)
         treeView.setUse2dScroll(true)
         treeView.setDefaultContainerStyle(R.style.TreeNodeStyleCustom)
 
