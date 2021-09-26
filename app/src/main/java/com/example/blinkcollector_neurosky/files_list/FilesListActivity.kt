@@ -28,7 +28,7 @@ class FilesListActivity : AppCompatActivity() {
     lateinit var filesListRepository: FilesListRepository
 
     @Inject
-    lateinit var filesTreeViewFactory: FilesTreeViewFactory
+    lateinit var treeViewController: TreeViewController
 
     private lateinit var innerScope: CoroutineScope
     private lateinit var treeView: AndroidTreeView
@@ -43,6 +43,14 @@ class FilesListActivity : AppCompatActivity() {
             val dataPoints = filesListData.data.map { DataPoint(it.x, it.y) }.toTypedArray()
             showPreviewGraph(LineGraphSeries(dataPoints))
         }
+
+        override fun hideChart() {
+            hidePreviewGraph()
+        }
+
+        override fun unselectAll() {
+            treeViewController.unselectAll()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,7 +64,7 @@ class FilesListActivity : AppCompatActivity() {
         innerScope = MainScope()
         innerScope.launch {
             filesListRepository.filesList.take(1).collect { files ->
-                treeView = filesTreeViewFactory.createTreeView(
+                treeView = treeViewController.createTreeView(
                         this@FilesListActivity,
                         files,
                        filesTreeListener
@@ -74,6 +82,7 @@ class FilesListActivity : AppCompatActivity() {
 
         binding.btnClose.setOnClickListener {
             hidePreviewGraph()
+            treeViewController.unselectAll()
         }
     }
 
